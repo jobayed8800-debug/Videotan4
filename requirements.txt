@@ -1,40 +1,39 @@
-# Core Telegram
+# Core
 python-telegram-bot==20.7
 python-dotenv==1.0.0
 
-# Audio Processing
+# Audio/Video Processing
 numpy==1.24.3
 scipy==1.11.4
 soundfile==0.12.1
 librosa==0.10.1
 ffmpeg-python==0.2.0
 aiofiles==23.2.1
+av==10.0.0
 
 # Deep Learning
 torch==2.1.0
 torchaudio==2.1.0
+torchvision==0.16.0
 
-# Speech Recognition (Faster-Whisper)
+# Speech Recognition
 faster-whisper==0.10.0
 
-# Translation (NLLB)
+# Translation
 transformers==4.36.2
 sentencepiece==0.1.99
 protobuf==3.20.3
 sacremoses==0.0.53
 accelerate==0.25.0
+tokenizers==0.15.0
 
-# Voice Cloning (XTTS)
+# Voice Cloning
 TTS==0.22.0
-
-# Web Framework (for webhooks)
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-gunicorn==21.2.0
 
 # Utilities
 pydantic==2.5.0
 requests==2.31.0
+tqdm==4.66.1requests==2.31.0
 
 # Optional: Progress tracking
 tqdm==4.66.1
