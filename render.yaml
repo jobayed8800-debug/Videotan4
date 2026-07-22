@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: bangla-video-dubber
+    runtime: docker
+    plan: starter
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: true
+      - key: HUGGINGFACE_TOKEN
+        sync: true
+      - key: REDIS_URL
+        sync: false
+    dockerfilePath: ./Dockerfile
+    disk:
+      name: storage
+      mountPath: /app/storage
+      sizeGB: 10
