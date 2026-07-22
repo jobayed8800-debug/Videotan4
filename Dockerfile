@@ -1,40 +1,55 @@
-# Use Python 3.10 slim image
 FROM python:3.10-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies with minimal packages
+# Install system dependencies including audio/video libraries
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    libavcodec-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libavdevice-dev \
+    libavfilter-dev \
+    libsndfile1-dev \
+    portaudio19-dev \
+    python3-dev \
+    build-essential \
+    pkg-config \
+    git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust (required for some ML packages)
+# Install Rust (required for some packages)
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Upgrade pip and install build tools
+RUN pip install --upgrade pip setuptools wheel
 
-# Copy requirements first for better caching
+# Install audio/video dependencies first
+RUN pip install --no-cache-dir av==10.0.0
+
+# Copy requirements
 COPY requirements.txt .
 
-# Install Python dependencies with retry
-RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt || \
-    (echo "Retrying with increased timeout..." && \
-     pip install --no-cache-dir --default-timeout=1000 -r requirements.txt)
+# Install requirements in batches
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy application
 COPY . .
 
-# Create necessary directories
+# Create directories
 RUN mkdir -p downloads outputs refs cloned_audio models storage
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
-ENV TRANSFORMERS_OFFLINE=0
+ENV PIP_NO_CACHE_DIR=1
+
+EXPOSE 8080
+
+CMD ["python", "-m", "bot.handlers"]ENV TRANSFORMERS_OFFLINE=0
 ENV HF_HUB_ENABLE_HF_TRANSFER=1
 
 # Expose port
